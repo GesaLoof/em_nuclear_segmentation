@@ -88,3 +88,5 @@ venv/
 src/em_nuclear_segmentation/data/
 src/em_nuclear_segmentation/datasets/
 
+# configs
+#src/em_nuclear_segmentation/config.py

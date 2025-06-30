@@ -1,40 +1,41 @@
-DATA_PARAMS = {
-    "data_path":"path/to/data",
-    "binarize":False,
-    "target_size":[64, 512, 512],
-    "patch_size":[32, 256, 256],
-    "augmentations":True
-}  
+# Input directories for raw dataset
+raw_image_dir = "raw_data/images"
+raw_mask_dir = "raw_data/masks"
 
-FINE_TUNING = {
-    "upload_model_path":"path/to/data",
-    "old_steps":2,
-}
+# Output directory for split dataset
+split_output_dir = "data"
 
+# Split ratios
+train_split = 0.7
+val_split = 0.15
+test_split = 0.15
 
-TRAINING_PARAMS = {
-    "loss":"bce",
-    "learning_rate": 1e-4,
-    "batch_size": 8,
-    "epochs": 200,
-    "save_model_path":"path/to/data",
-    "fine_tuning":True,
-    "save_each":True,
-}
+# Random seed for reproducibility
+random_seed = 42
 
-TEST_PARAMS = {
-    "data_path":"path/to/data",
-    "binarize":False,
-    "target_size":[64, 512, 512],
-    "patch_size":[32, 512, 512],
-    "batch_size": 2,
-    "load_model_path":"path/to/data",
-    "load_csv_path":"path/to/data"
-}
+# Data paths
+train_image_dir = "data/train/images"
+train_mask_dir = "data/train/masks"
 
-PRED_PARAMS = {
-    "data_path":"path/to/data",
-    "final_load_model_path": "path/to/data",
-    "batch_size": 2,
-    "save_pred_path":"path/to/data"
-}
+# Training hyperparameters
+batch_size = 4
+learning_rate = 1e-4
+num_epochs = 10
+
+# Image settings
+resize_height = 256
+resize_width = 256
+
+# Augmentation
+use_augmentation = True
+
+# Model
+in_channels = 1
+out_channels = 1
+
+# Checkpoint
+checkpoint_path = "unet_nuclei.pth"
+
+# Output directory for predictions
+prediction_output_dir = "predictions"
+
