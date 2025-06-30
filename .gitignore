@@ -82,3 +82,9 @@ venv/
 
 # written by setuptools_scm
 **/_version.py
+
+
+#data
+src/em_nuclear_segmentation/data/
+src/em_nuclear_segmentation/datasets/
+
