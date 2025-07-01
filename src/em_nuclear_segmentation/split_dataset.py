@@ -2,7 +2,7 @@ import os
 import shutil
 import random
 from pathlib import Path
-from nuclear_segmentation import config
+from em_nuclear_segmentation import config
 
 def split_dataset():
     image_dir = Path(config.raw_image_dir)

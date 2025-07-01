@@ -7,7 +7,7 @@ from albumentations.pytorch import ToTensorV2
 import albumentations as A
 import os
 from tqdm import tqdm
-from nuclear_segmentation import config
+from em_nuclear_segmentation import config
 
 # Device selection: CUDA > MPS > CPU
 def get_device():

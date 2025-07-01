@@ -1,6 +1,6 @@
 # Input directories for raw dataset
-raw_image_dir = "raw_data/images"
-raw_mask_dir = "raw_data/masks"
+raw_image_dir = "/Users/gloof/Desktop/data/cellmap_2d_training_data_nuc/em_2D"
+raw_mask_dir = "/Users/gloof/Desktop/data/cellmap_2d_training_data_nuc/gt_2D"
 
 # Output directory for split dataset
 split_output_dir = "data"
