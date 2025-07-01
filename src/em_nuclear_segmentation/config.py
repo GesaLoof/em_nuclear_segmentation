@@ -17,6 +17,10 @@ random_seed = 42
 train_image_dir = "data/train/images"
 train_mask_dir = "data/train/masks"
 
+# Validation directories
+val_image_dir = "data/val/images"
+val_mask_dir = "data/val/masks"
+
 # Training hyperparameters
 batch_size = 4
 learning_rate = 1e-4
@@ -38,4 +42,8 @@ checkpoint_path = "unet_nuclei.pth"
 
 # Output directory for predictions
 prediction_output_dir = "predictions"
+
+# Log path and final model path
+checkpoint_path = "unet_nuclei.pth"
+split_output_dir = "data"
 
