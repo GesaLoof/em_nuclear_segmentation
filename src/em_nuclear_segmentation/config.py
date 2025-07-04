@@ -1,11 +1,15 @@
-# Input directories for raw dataset
-raw_image_dir = "/Users/gloof/Desktop/data/cellmap_2d_training_data_nuc/em_2D"
-raw_mask_dir = "/Users/gloof/Desktop/data/cellmap_2d_training_data_nuc/gt_2D"
+##########################################
+#           RAW DATA CONFIGURATION       #
+##########################################
+
+# Input directories for raw EM images and masks
+raw_image_dir = "/Users/gloof/Desktop/data/cellmap_2d_training_data_nuc/2D_em_masks_030725/em_2d"
+raw_mask_dir = "/Users/gloof/Desktop/data/cellmap_2d_training_data_nuc/2D_em_masks_030725/gt_2d"
 
 # Output directory for split dataset
-split_output_dir = "data"
+split_output_dir = "preprocessed"
 
-# Split ratios
+# Train/val/test split ratios
 train_split = 0.7
 val_split = 0.15
 test_split = 0.15
@@ -13,37 +17,97 @@ test_split = 0.15
 # Random seed for reproducibility
 random_seed = 42
 
-# Data paths
-train_image_dir = "data/train/images"
-train_mask_dir = "data/train/masks"
 
-# Validation directories
-val_image_dir = "data/val/images"
-val_mask_dir = "data/val/masks"
+##########################################
+#           PATCH CROPPING SETTINGS      #
+##########################################
 
-# Training hyperparameters
-batch_size = 4
-learning_rate = 1e-4
-num_epochs = 10
+# Cropping parameters
+patch_size = 256
+edge_mode = "pad"                # Options: "keep", "pad", "overlap"
+pad_fill_mode = "mean"           # Options: "zero", "mean", "median", "value:128"
 
-# Image settings
+# Output directory for cropped patches
+cropped_output_dir = "/Users/gloof/Desktop/code/em_nuclear_segmentation/src/em_nuclear_segmentation/data/preprocessed"
+
+# Plotting and preview settings
+plot_path = "preprocessed/size_distribution.png"
+preview_grid_path = "preprocessed/preview_grid.png"
+max_preview_patches = 25
+
+
+##########################################
+#        TRAINING DATA DIRECTORIES       #
+##########################################
+
+# Directories for training and validation data
+train_image_dir = "/Users/gloof/Desktop/code/em_nuclear_segmentation/src/em_nuclear_segmentation/data/train/images"
+train_mask_dir  = "/Users/gloof/Desktop/code/em_nuclear_segmentation/src/em_nuclear_segmentation/data/train/masks"
+
+val_image_dir   = "/Users/gloof/Desktop/code/em_nuclear_segmentation/src/em_nuclear_segmentation/data/val/images"
+val_mask_dir    = "/Users/gloof/Desktop/code/em_nuclear_segmentation/src/em_nuclear_segmentation/data/val/masks"
+
+
+##########################################
+#            TRAINING SETTINGS           #
+##########################################
+
+# Input image resizing
 resize_height = 256
 resize_width = 256
 
-# Augmentation
-use_augmentation = True
-
-# Model
+# Model I/O channels
 in_channels = 1
 out_channels = 1
 
-# Checkpoint
+# Training hyperparameters
+batch_size = 8
+learning_rate = 1e-4
+num_epochs = 100
+
+# Data augmentation
+use_augmentation = True
+
+# Early stopping
+use_early_stopping = True
+early_stopping_patience = 5  # Stop if val_loss doesn't improve after X epochs
+
+# Model checkpoint path
 checkpoint_path = "unet_nuclei.pth"
 
-# Output directory for predictions
-prediction_output_dir = "predictions"
 
-# Log path and final model path
-checkpoint_path = "unet_nuclei.pth"
-split_output_dir = "data"
+##########################################
+#            EVALUATION SETTINGS         #
+##########################################
 
+# Path to trained model for evaluation
+evaluation_model_path = "/Users/gloof/Desktop/code/em_nuclear_segmentation/src/em_nuclear_segmentation/data/best_model.pth"
+
+# Dataset to evaluate (usually test or val)
+test_image_dir = "/Users/gloof/Desktop/code/em_nuclear_segmentation/src/em_nuclear_segmentation/data/test/images"
+test_mask_dir  = "/Users/gloof/Desktop/code/em_nuclear_segmentation/src/em_nuclear_segmentation/data/test/masks"
+
+# Output paths for evaluation results
+evaluation_output_csv = "/Users/gloof/Desktop/code/em_nuclear_segmentation/src/em_nuclear_segmentation/data/results_030725/evaluation_metrics.csv"
+prediction_output_dir = "/Users/gloof/Desktop/code/em_nuclear_segmentation/src/em_nuclear_segmentation/data/results_030725/predictions"
+save_predictions = True
+save_visualizations = True
+
+
+##########################################
+#            PREDICTION SETTINGS         #
+##########################################
+model_path = "/Users/gloof/Desktop/code/em_nuclear_segmentation/src/em_nuclear_segmentation/data/best_model.pth"
+prediction_output_dir = "/Users/gloof/Desktop/code/em_nuclear_segmentation/src/em_nuclear_segmentation/data/results_Matt/predictions"
+# Toggle saving of visualization overlays (input vs. prediction)
+save_visual_overlay = True
+
+
+##########################################
+#            FINE TUNE SETTINGS         #
+##########################################
+fine_tune = True
+fine_tune_from = "data/best_model.pth"   # path to the pretrained model
+freeze_encoder = True                    # whether to freeze encoder
+fine_tune_epochs = 20                    # how many epochs to fine-tune
+fine_tune_output_dir = "data/fine_tuned_model.pth"  # output path for fine-tuned model

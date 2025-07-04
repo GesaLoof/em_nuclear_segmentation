@@ -83,10 +83,12 @@ venv/
 # written by setuptools_scm
 **/_version.py
 
-
 #data
 src/em_nuclear_segmentation/data/
 #src/em_nuclear_segmentation/datasets/
 
 # configs
 src/em_nuclear_segmentation/config.py
+
+#models
+src/em_nuclear_segmentation/unet_nuclei.pth
