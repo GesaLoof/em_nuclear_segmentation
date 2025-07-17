@@ -54,6 +54,9 @@ def main():
     best_val_loss = float("inf")
 
     # Resume support
+    if not os.path.exists(config.resume_checkpoint_path):
+        print("No checkpoint found. Starting fresh training.")
+
     if getattr(config, "resume_training", False) and os.path.exists(config.resume_checkpoint_path):
         print(f"Resuming from checkpoint: {config.resume_checkpoint_path}")
         model.load_state_dict(torch.load(config.resume_checkpoint_path, map_location=device))
