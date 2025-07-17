@@ -7,7 +7,7 @@ raw_image_dir = "/Users/gloof/Desktop/data/cellmap_2d_training_data_nuc/2D_em_ma
 raw_mask_dir = "/Users/gloof/Desktop/data/cellmap_2d_training_data_nuc/2D_em_masks_100725_6_75nm/gt_2d"
 
 # Output directory for split dataset
-split_output_dir = "data"
+split_output_dir = "tmp"
 
 # Train/val/test split ratios
 train_split = 0.7
