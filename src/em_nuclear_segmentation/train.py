@@ -7,7 +7,7 @@ import os
 import csv
 from tqdm import tqdm
 from em_nuclear_segmentation import config
-from em_nuclear_segmentation.utils.transforms import get_transforms, get_val_transforms
+from em_nuclear_segmentation.utils.transform import get_transforms, get_val_transforms
 
 # Device selection
 def get_device():

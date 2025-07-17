@@ -73,8 +73,8 @@ use_early_stopping = True
 early_stopping_patience = 20  # Stop if val_loss doesn't improve after X epochs
 
 # final model output name
-train_output_dir = "training_output"
-model_output_name = "nuclei_unet_140725.pth"
+train_output_dir = "test"
+model_output_name = "test.pth"
  
 ##########################################
 #            EVALUATION SETTINGS         #

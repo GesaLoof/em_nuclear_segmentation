@@ -4,7 +4,7 @@ from torch.utils.data import DataLoader
 from models.unet import UNet
 from datasets.nuclei_dataset import NucleiDataset
 from em_nuclear_segmentation import config
-from em_nuclear_segmentation.utils.transforms import get_transforms, get_val_transforms
+from em_nuclear_segmentation.utils.transform import get_transforms, get_val_transforms
 import os
 import csv
 from tqdm import tqdm
