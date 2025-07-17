@@ -33,7 +33,6 @@ def evaluate(model, dataloader, loss_fn):
             total_loss += loss.item()
     return total_loss / len(dataloader)
 
-# Training loop
 def main():
     # Load datasets
     train_dataset = NucleiDataset(config.train_image_dir, config.train_mask_dir, transform=get_transforms())
@@ -41,22 +40,47 @@ def main():
     train_loader = DataLoader(train_dataset, batch_size=config.batch_size, shuffle=True)
     val_loader = DataLoader(val_dataset, batch_size=config.batch_size, shuffle=False)
 
-    # Model setup
+    # Initialize model
     model = UNet(in_channels=config.in_channels, out_channels=config.out_channels).to(device)
     optimizer = torch.optim.Adam(model.parameters(), lr=config.learning_rate)
     loss_fn = nn.BCEWithLogitsLoss()
 
-    # Logging and output directory
     os.makedirs(config.train_output_dir, exist_ok=True)
     log_path = os.path.join(config.train_output_dir, "training_log.csv")
-    with open(log_path, mode="w", newline="") as f:
-        writer = csv.writer(f)
-        writer.writerow(["epoch", "train_loss", "val_loss"])
+    best_model_path = os.path.join(config.train_output_dir, f"best_{config.model_output_name}")
+    final_model_path = os.path.join(config.train_output_dir, f"final_{config.model_output_name}")
 
+    start_epoch = 0
     best_val_loss = float("inf")
+
+    # Resume support
+    if getattr(config, "resume_training", False) and os.path.exists(config.resume_checkpoint_path):
+        print(f"Resuming from checkpoint: {config.resume_checkpoint_path}")
+        model.load_state_dict(torch.load(config.resume_checkpoint_path, map_location=device))
+
+        if os.path.exists(log_path):
+            with open(log_path, newline="") as f:
+                reader = csv.DictReader(f)
+                history = list(reader)
+            if history:
+                last_entry = history[-1]
+                start_epoch = int(last_entry["epoch"])
+                best_val_loss = float(last_entry["val_loss"])
+                print(f"Resuming at epoch {start_epoch+1} with best_val_loss = {best_val_loss:.4f}")
+        else:
+            print("No training log found — starting from checkpoint but logging fresh.")
+            with open(log_path, mode="w", newline="") as f:
+                writer = csv.writer(f)
+                writer.writerow(["epoch", "train_loss", "val_loss"])
+    else:
+        # Start fresh log
+        with open(log_path, mode="w", newline="") as f:
+            writer = csv.writer(f)
+            writer.writerow(["epoch", "train_loss", "val_loss"])
+
     patience_counter = 0
 
-    for epoch in range(config.num_epochs):
+    for epoch in range(start_epoch, config.num_epochs):
         model.train()
         running_loss = 0.0
         loop = tqdm(train_loader, desc=f"Epoch {epoch+1}/{config.num_epochs}")
@@ -78,7 +102,7 @@ def main():
         avg_train_loss = running_loss / len(train_loader)
         val_loss = evaluate(model, val_loader, loss_fn)
 
-        # Log to CSV
+        # Log results
         with open(log_path, mode="a", newline="") as f:
             writer = csv.writer(f)
             writer.writerow([epoch + 1, avg_train_loss, val_loss])
@@ -86,7 +110,6 @@ def main():
         print(f"Epoch {epoch+1}: Train Loss = {avg_train_loss:.4f}, Val Loss = {val_loss:.4f}")
 
         # Save best checkpoint
-        best_model_path = os.path.join(config.train_output_dir, f"best_{config.model_output_name}")
         if val_loss < best_val_loss:
             best_val_loss = val_loss
             patience_counter = 0
@@ -101,7 +124,6 @@ def main():
             break
 
     # Save final model
-    final_model_path = os.path.join(config.train_output_dir, f"final_{config.model_output_name}")
     torch.save(model.state_dict(), final_model_path)
     print(f"Training complete. Final model saved to {final_model_path}")
 
