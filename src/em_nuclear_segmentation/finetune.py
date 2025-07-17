@@ -3,12 +3,11 @@ import torch.nn as nn
 from torch.utils.data import DataLoader
 from models.unet import UNet
 from datasets.nuclei_dataset import NucleiDataset
-from albumentations.pytorch import ToTensorV2
-import albumentations as A
+from em_nuclear_segmentation import config
+from em_nuclear_segmentation.utils.transforms import get_transforms, get_val_transforms
 import os
 import csv
 from tqdm import tqdm
-from em_nuclear_segmentation import config
 
 # Device selection
 def get_device():
@@ -20,21 +19,6 @@ def get_device():
         return torch.device("cpu")
 
 device = get_device()
-
-def get_transforms():
-    transforms = [A.Resize(config.resize_height, config.resize_width)]
-    if config.use_augmentation:
-        transforms.extend([
-            A.HorizontalFlip(p=0.5),
-            A.VerticalFlip(p=0.5),
-            A.RandomRotate90(p=0.5),
-            A.Affine(translate_percent=0.0625, scale=(0.9, 1.1), rotate=(-15, 15), p=0.5)
-        ])
-    transforms.extend([
-        A.Normalize(mean=(0.5,), std=(0.5,)),
-        ToTensorV2()
-    ])
-    return A.Compose(transforms)
 
 def evaluate(model, dataloader, loss_fn):
     model.eval()
@@ -50,14 +34,14 @@ def evaluate(model, dataloader, loss_fn):
 
 def freeze_encoder_layers(model):
     """Freezes the encoder layers of the U-Net model."""
-    for i, layer in enumerate(model.encoder):
+    for layer in model.encoder:
         for param in layer.parameters():
             param.requires_grad = False
 
 def fine_tune():
     # Load datasets
     train_dataset = NucleiDataset(config.train_image_dir, config.train_mask_dir, transform=get_transforms())
-    val_dataset = NucleiDataset(config.val_image_dir, config.val_mask_dir, transform=get_transforms())
+    val_dataset = NucleiDataset(config.val_image_dir, config.val_mask_dir, transform=get_val_transforms())
     train_loader = DataLoader(train_dataset, batch_size=config.batch_size, shuffle=True)
     val_loader = DataLoader(val_dataset, batch_size=config.batch_size, shuffle=False)
 
@@ -113,10 +97,12 @@ def fine_tune():
 
         print(f"Epoch {epoch+1}: Train Loss = {avg_train_loss:.4f}, Val Loss = {val_loss:.4f}")
 
+        # Save best model
         if val_loss < best_val_loss:
             best_val_loss = val_loss
-            torch.save(model.state_dict(), os.path.join(config.fine_tune_output_dir, "fine_tuned_model.pth"))
-            print(f"Saved fine-tuned model (val_loss = {val_loss:.4f})")
+            model_path = os.path.join(config.fine_tune_output_dir, f"fine_tuned_{config.fine_tune_output_name}")
+            torch.save(model.state_dict(), model_path)
+            print(f"Saved fine-tuned model to {model_path} (val_loss = {val_loss:.4f})")
 
     print("Fine-tuning complete.")
 

@@ -3,12 +3,11 @@ import torch.nn as nn
 from torch.utils.data import DataLoader
 from models.unet import UNet
 from datasets.nuclei_dataset import NucleiDataset
-from albumentations.pytorch import ToTensorV2
-import albumentations as A
 import os
 import csv
 from tqdm import tqdm
-from nuclear_segmentation import config
+from em_nuclear_segmentation import config
+from em_nuclear_segmentation.utils.transforms import get_transforms, get_val_transforms
 
 # Device selection
 def get_device():
@@ -21,23 +20,7 @@ def get_device():
 
 device = get_device()
 
-# Augmentations
-def get_transforms():
-    transforms = [A.Resize(config.resize_height, config.resize_width)]
-    if config.use_augmentation:
-        transforms.extend([
-            A.HorizontalFlip(p=0.5),
-            A.VerticalFlip(p=0.5),
-            A.RandomRotate90(p=0.5),
-            A.Affine(translate_percent=0.0625, scale=(0.9, 1.1), rotate=(-15, 15), p=0.5)
-        ])
-    transforms.extend([
-        A.Normalize(mean=(0.5,), std=(0.5,)),
-        ToTensorV2()
-    ])
-    return A.Compose(transforms)
-
-# Validation loss evaluation
+# Validation evaluation
 def evaluate(model, dataloader, loss_fn):
     model.eval()
     total_loss = 0
@@ -50,22 +33,22 @@ def evaluate(model, dataloader, loss_fn):
             total_loss += loss.item()
     return total_loss / len(dataloader)
 
-# Main training loop
+# Training loop
 def main():
     # Load datasets
     train_dataset = NucleiDataset(config.train_image_dir, config.train_mask_dir, transform=get_transforms())
-    val_dataset = NucleiDataset(config.val_image_dir, config.val_mask_dir, transform=get_transforms())
+    val_dataset = NucleiDataset(config.val_image_dir, config.val_mask_dir, transform=get_val_transforms())
     train_loader = DataLoader(train_dataset, batch_size=config.batch_size, shuffle=True)
     val_loader = DataLoader(val_dataset, batch_size=config.batch_size, shuffle=False)
 
-    # Model, optimizer, loss
+    # Model setup
     model = UNet(in_channels=config.in_channels, out_channels=config.out_channels).to(device)
     optimizer = torch.optim.Adam(model.parameters(), lr=config.learning_rate)
     loss_fn = nn.BCEWithLogitsLoss()
 
-    # Logging
-    os.makedirs(config.split_output_dir, exist_ok=True)
-    log_path = os.path.join(config.split_output_dir, "training_log.csv")
+    # Logging and output directory
+    os.makedirs(config.train_output_dir, exist_ok=True)
+    log_path = os.path.join(config.train_output_dir, "training_log.csv")
     with open(log_path, mode="w", newline="") as f:
         writer = csv.writer(f)
         writer.writerow(["epoch", "train_loss", "val_loss"])
@@ -95,19 +78,20 @@ def main():
         avg_train_loss = running_loss / len(train_loader)
         val_loss = evaluate(model, val_loader, loss_fn)
 
-        # Log each epoch
+        # Log to CSV
         with open(log_path, mode="a", newline="") as f:
             writer = csv.writer(f)
             writer.writerow([epoch + 1, avg_train_loss, val_loss])
 
         print(f"Epoch {epoch+1}: Train Loss = {avg_train_loss:.4f}, Val Loss = {val_loss:.4f}")
 
-        # Checkpointing
+        # Save best checkpoint
+        best_model_path = os.path.join(config.train_output_dir, f"best_{config.model_output_name}")
         if val_loss < best_val_loss:
             best_val_loss = val_loss
-            patience_counter = 0  # reset
-            torch.save(model.state_dict(), os.path.join(config.split_output_dir, "best_model.pth"))
-            print(f"Saved best model (val_loss = {val_loss:.4f})")
+            patience_counter = 0
+            torch.save(model.state_dict(), best_model_path)
+            print(f"Saved best model to {best_model_path} (val_loss = {val_loss:.4f})")
         else:
             patience_counter += 1
 
@@ -117,8 +101,9 @@ def main():
             break
 
     # Save final model
-    torch.save(model.state_dict(), config.checkpoint_path)
-    print(f"Training complete. Final model saved to {config.checkpoint_path}")
+    final_model_path = os.path.join(config.train_output_dir, f"final_{config.model_output_name}")
+    torch.save(model.state_dict(), final_model_path)
+    print(f"Training complete. Final model saved to {final_model_path}")
 
 if __name__ == "__main__":
     main()

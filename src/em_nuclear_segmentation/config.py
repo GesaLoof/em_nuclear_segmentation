@@ -3,11 +3,11 @@
 ##########################################
 
 # Input directories for raw EM images and masks
-raw_image_dir = "/Users/gloof/Desktop/data/cellmap_2d_training_data_nuc/2D_em_masks_030725/em_2d"
-raw_mask_dir = "/Users/gloof/Desktop/data/cellmap_2d_training_data_nuc/2D_em_masks_030725/gt_2d"
+raw_image_dir = "/Users/gloof/Desktop/data/cellmap_2d_training_data_nuc/2D_em_masks_100725_6_75nm/em_2d"
+raw_mask_dir = "/Users/gloof/Desktop/data/cellmap_2d_training_data_nuc/2D_em_masks_100725_6_75nm/gt_2d"
 
 # Output directory for split dataset
-split_output_dir = "preprocessed"
+split_output_dir = "data"
 
 # Train/val/test split ratios
 train_split = 0.7
@@ -70,37 +70,41 @@ use_augmentation = True
 
 # Early stopping
 use_early_stopping = True
-early_stopping_patience = 5  # Stop if val_loss doesn't improve after X epochs
+early_stopping_patience = 20  # Stop if val_loss doesn't improve after X epochs
 
-# Model checkpoint path
-checkpoint_path = "unet_nuclei.pth"
-
-
+# final model output name
+train_output_dir = "training_output"
+model_output_name = "nuclei_unet_140725.pth"
+ 
 ##########################################
 #            EVALUATION SETTINGS         #
 ##########################################
 
 # Path to trained model for evaluation
-evaluation_model_path = "/Users/gloof/Desktop/code/em_nuclear_segmentation/src/em_nuclear_segmentation/data/best_model.pth"
+evaluation_model_path = "/Users/gloof/Desktop/code/em_nuclear_segmentation/src/em_nuclear_segmentation/data/best_nuclei_unet_140725.pth"
 
 # Dataset to evaluate (usually test or val)
 test_image_dir = "/Users/gloof/Desktop/code/em_nuclear_segmentation/src/em_nuclear_segmentation/data/test/images"
 test_mask_dir  = "/Users/gloof/Desktop/code/em_nuclear_segmentation/src/em_nuclear_segmentation/data/test/masks"
 
 # Output paths for evaluation results
-evaluation_output_csv = "/Users/gloof/Desktop/code/em_nuclear_segmentation/src/em_nuclear_segmentation/data/results_030725/evaluation_metrics.csv"
-prediction_output_dir = "/Users/gloof/Desktop/code/em_nuclear_segmentation/src/em_nuclear_segmentation/data/results_030725/predictions"
+evaluation_output_csv = "/Users/gloof/Desktop/code/em_nuclear_segmentation/src/em_nuclear_segmentation/data/results_150725/evaluation_metrics.csv"
+prediction_output_dir = "/Users/gloof/Desktop/code/em_nuclear_segmentation/src/em_nuclear_segmentation/data/results_150725/predictions"
 save_predictions = True
 save_visualizations = True
+architecture_diagram_path = "assets/unet_architecture.png"
 
 
 ##########################################
 #            PREDICTION SETTINGS         #
 ##########################################
-model_path = "/Users/gloof/Desktop/code/em_nuclear_segmentation/src/em_nuclear_segmentation/data/best_model.pth"
-prediction_output_dir = "/Users/gloof/Desktop/code/em_nuclear_segmentation/src/em_nuclear_segmentation/data/results_Matt/predictions"
+model_path = "/Users/gloof/Desktop/code/em_nuclear_segmentation/src/em_nuclear_segmentation/data/best_nuclei_unet_140725.pth"
+prediction_output_dir = "/Users/gloof/Desktop/code/em_nuclear_segmentation/src/em_nuclear_segmentation/data/results_150725/Matt/predictions"
 # Toggle saving of visualization overlays (input vs. prediction)
 save_visual_overlay = True
+use_histogram_matching = True
+histogram_reference_image = "/Users/gloof/Desktop/code/em_nuclear_segmentation/src/em_nuclear_segmentation/data/train/images/image_90.tif" #"path/to/reference_image.tif"
+
 
 
 ##########################################
@@ -110,4 +114,6 @@ fine_tune = True
 fine_tune_from = "data/best_model.pth"   # path to the pretrained model
 freeze_encoder = True                    # whether to freeze encoder
 fine_tune_epochs = 20                    # how many epochs to fine-tune
-fine_tune_output_dir = "data/fine_tuned_model.pth"  # output path for fine-tuned model
+fine_tune_output_dir = "data/"  # output path for fine-tuned model
+fine_tune_output_name = "my_finetuned_model.pth"
+rescale_uint16_to_uint8 = True  # If True, uint16 images are scaled to match uint8 input range
