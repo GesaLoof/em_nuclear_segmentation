@@ -35,7 +35,7 @@ def get_transforms():
             "scale": (0.95, 1.05),
             "rotate": (-10, 10),
             "shear": (-5, 5),
-            "mode": "reflect",
+            "border_mode": "1",
             "p": 0.3
         }
         transforms.append(
@@ -44,7 +44,7 @@ def get_transforms():
                 scale=(0.95, 1.05),
                 rotate=(-10, 10),
                 shear=(-5, 5),
-                mode=1,  # reflect
+                border_mode=1,  # reflect
                 p=0.3
             )
         )
@@ -57,8 +57,8 @@ def get_transforms():
         }
         transforms.append(A.RandomBrightnessContrast(brightness_limit=0.1, contrast_limit=0.1, p=0.4))
 
-        _applied_augmentations["GaussNoise"] = {"var_limit": (5.0, 20.0), "p": 0.3}
-        transforms.append(A.GaussNoise(var_limit=(5.0, 20.0), p=0.3))
+        _applied_augmentations["GaussNoise"] = {"p": 0.3}
+        transforms.append(A.GaussNoise(p=0.3))
 
         _applied_augmentations["MotionBlur"] = {"blur_limit": 3, "p": 0.1}
         transforms.append(A.MotionBlur(blur_limit=3, p=0.1))
@@ -66,11 +66,10 @@ def get_transforms():
         _applied_augmentations["ElasticTransform"] = {
             "alpha": 0.5,
             "sigma": 10,
-            "alpha_affine": 5,
             "border_mode": "reflect",
             "p": 0.1
         }
-        transforms.append(A.ElasticTransform(alpha=0.5, sigma=10, alpha_affine=5, border_mode=1, p=0.1))
+        transforms.append(A.ElasticTransform(alpha=0.5, sigma=10, border_mode=1, p=0.1))
 
     # Final normalization and tensor conversion
     transforms.extend([
