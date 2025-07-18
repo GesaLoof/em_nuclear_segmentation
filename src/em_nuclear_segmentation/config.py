@@ -64,6 +64,7 @@ out_channels = 1
 batch_size = 8
 learning_rate = 1e-4
 num_epochs = 100
+dropout_prob = 0.2  # or 0.0 to disable
 
 # Data augmentation
 use_augmentation = True

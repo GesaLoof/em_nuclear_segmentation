@@ -46,7 +46,8 @@ def fine_tune():
     val_loader = DataLoader(val_dataset, batch_size=config.batch_size, shuffle=False)
 
     # Initialize model and load pretrained weights
-    model = UNet(in_channels=config.in_channels, out_channels=config.out_channels)
+    model = UNet(in_channels=config.in_channels, out_channels=config.out_channels,
+    dropout_prob=config.dropout_prob).to(device)
     model.load_state_dict(torch.load(config.fine_tune_from, map_location=device))
     model = model.to(device)
 
