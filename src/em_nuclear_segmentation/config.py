@@ -3,8 +3,8 @@
 ##########################################
 
 # Input directories for raw EM images and masks
-raw_image_dir = "/Users/gloof/Desktop/data/cellmap_2d_training_data_nuc/2D_em_masks_100725_6_75nm/em_2d"
-raw_mask_dir = "/Users/gloof/Desktop/data/cellmap_2d_training_data_nuc/2D_em_masks_100725_6_75nm/gt_2d"
+raw_image_dir = "/fast/home/g/gloof/ida/data/2D_public_em_data/2D_em_masks_100725_6_75nm/em_2d/"
+raw_mask_dir = "/fast/home/g/gloof/ida/data/2D_public_em_data/2D_em_masks_100725_6_75nm/gt_2d/"
 
 # Output directory for split dataset
 split_output_dir = "tmp"
@@ -41,11 +41,11 @@ max_preview_patches = 25
 ##########################################
 
 # Directories for training and validation data
-train_image_dir = "/Users/gloof/Desktop/code/em_nuclear_segmentation/src/em_nuclear_segmentation/data/train/images"
-train_mask_dir  = "/Users/gloof/Desktop/code/em_nuclear_segmentation/src/em_nuclear_segmentation/data/train/masks"
+train_image_dir = "/fast/home/g/gloof/ida/code/em_nuclear_segmentation/data/train/images"
+train_mask_dir  = "/fast/home/g/gloof/ida/code/em_nuclear_segmentation/data/train//masks"
 
-val_image_dir   = "/Users/gloof/Desktop/code/em_nuclear_segmentation/src/em_nuclear_segmentation/data/val/images"
-val_mask_dir    = "/Users/gloof/Desktop/code/em_nuclear_segmentation/src/em_nuclear_segmentation/data/val/masks"
+val_image_dir   = "/fast/home/g/gloof/ida/code/em_nuclear_segmentation/data/val/images"
+val_mask_dir    = "/fast/home/g/gloof/ida/code/em_nuclear_segmentation/data/val/masks"
 
 
 ##########################################
@@ -61,9 +61,9 @@ in_channels = 1
 out_channels = 1
 
 # Training hyperparameters
-batch_size = 8
+batch_size = 16
 learning_rate = 1e-4
-num_epochs = 100
+num_epochs = 200
 dropout_prob = 0.2  # or 0.0 to disable
 
 # Data augmentation
@@ -74,37 +74,40 @@ use_early_stopping = True
 early_stopping_patience = 20  # Stop if val_loss doesn't improve after X epochs
 
 # final model output name
-train_output_dir = "test"
-model_output_name = "test.pth"
- 
+train_output_dir = "training_output"
+model_output_name = "nuclei_unet_170725_soft_aug.pth"
+
+resume_training = True
+resume_checkpoint_path = "training_output/best_nuclei_unet_170725_soft_aug.pth"
+
 ##########################################
 #            EVALUATION SETTINGS         #
 ##########################################
 
 # Path to trained model for evaluation
-evaluation_model_path = "/Users/gloof/Desktop/code/em_nuclear_segmentation/src/em_nuclear_segmentation/data/best_nuclei_unet_140725.pth"
+evaluation_model_path = "/fast/home/g/gloof/ida/code/em_nuclear_segmentation/training_output/best_nuclei_unet_170725_soft_aug.pth"
 
 # Dataset to evaluate (usually test or val)
-test_image_dir = "/Users/gloof/Desktop/code/em_nuclear_segmentation/src/em_nuclear_segmentation/data/test/images"
-test_mask_dir  = "/Users/gloof/Desktop/code/em_nuclear_segmentation/src/em_nuclear_segmentation/data/test/masks"
+test_image_dir = "/fast/home/g/gloof/ida/code/em_nuclear_segmentation/data/test/images"
+test_mask_dir  = "/fast/home/g/gloof/ida/code/em_nuclear_segmentation/data/test/masks"
 
 # Output paths for evaluation results
-evaluation_output_csv = "/Users/gloof/Desktop/code/em_nuclear_segmentation/src/em_nuclear_segmentation/data/results_150725/evaluation_metrics.csv"
-prediction_output_dir = "/Users/gloof/Desktop/code/em_nuclear_segmentation/src/em_nuclear_segmentation/data/results_150725/predictions"
+evaluation_output_csv = "/fast/home/g/gloof/ida/code/em_nuclear_segmentation/src/em_nuclear_segmentation/data/results_170725/evaluation_metrics.csv"
+prediction_output_dir = "/fast/home/g/gloof/ida/code/em_nuclear_segmentation/src/em_nuclear_segmentation/data/results_170725/predictions"
 save_predictions = True
 save_visualizations = True
-architecture_diagram_path = "assets/unet_architecture.png"
+architecture_diagram_path = "/fast/home/g/gloof/ida/code/em_nuclear_segmentation/src/em_nuclear_segmentation/data/results_170725/unet_architecture.png"
 
 
 ##########################################
 #            PREDICTION SETTINGS         #
 ##########################################
-model_path = "/Users/gloof/Desktop/code/em_nuclear_segmentation/src/em_nuclear_segmentation/data/best_nuclei_unet_140725.pth"
-prediction_output_dir = "/Users/gloof/Desktop/code/em_nuclear_segmentation/src/em_nuclear_segmentation/data/results_150725/Matt/predictions"
+model_path = "/fast/home/g/gloof/ida/code/em_nuclear_segmentation/data/best_nuclei_unet_170725_soft_aug.pth"
+prediction_output_dir = "/fast/home/g/gloof/ida/code/em_nuclear_segmentation/src/em_nuclear_segmentation/data/results_170725/predictions"
 # Toggle saving of visualization overlays (input vs. prediction)
 save_visual_overlay = True
-use_histogram_matching = True
-histogram_reference_image = "/Users/gloof/Desktop/code/em_nuclear_segmentation/src/em_nuclear_segmentation/data/train/images/image_90.tif" #"path/to/reference_image.tif"
+use_histogram_matching = False
+histogram_reference_image = "/fast/home/g/gloof/ida/code/em_nuclear_segmentation/src/em_nuclear_segmentation/data/train/images/image_90.tif" #"path/to/reference_image.tif"
 
 
 

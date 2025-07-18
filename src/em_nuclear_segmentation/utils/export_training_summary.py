@@ -4,7 +4,7 @@ import pandas as pd
 import matplotlib.pyplot as plt
 from matplotlib.backends.backend_pdf import PdfPages
 from em_nuclear_segmentation import config
-from em_nuclear_segmentation.utils.transforms import (
+from em_nuclear_segmentation.utils.transform import (
     get_transforms,
     get_training_augmentation_description
 )

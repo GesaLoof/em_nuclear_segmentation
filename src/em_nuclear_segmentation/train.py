@@ -41,9 +41,7 @@ def main():
     val_loader = DataLoader(val_dataset, batch_size=config.batch_size, shuffle=False)
 
     # Initialize model
-    model = UNet(in_channels=config.in_channels, out_channels=config.out_channels,
-    dropout_prob=config.dropout_prob).to(device)
-
+    model = UNet(in_channels=config.in_channels, out_channels=config.out_channels).to(device)
     optimizer = torch.optim.Adam(model.parameters(), lr=config.learning_rate)
     loss_fn = nn.BCEWithLogitsLoss()
 
