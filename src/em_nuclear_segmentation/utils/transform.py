@@ -63,8 +63,9 @@ def get_transforms():
         _applied_augmentations["MotionBlur"] = {"blur_limit": 3, "p": 0.3}
         transforms.append(A.MotionBlur(blur_limit=3, p=0.3))
         
-        _applied_augmentations["CoarseDropout"] = {"max_holes": 4, "max_height": 32, "max_width": 32, "fill_value": 0, "p": 0.3}
-        transforms.append(A.CoarseDropout(max_holes=4, max_height=32, max_width=32, fill_value=0, p=0.3))
+        _applied_augmentations["CoarseDropout"] = {"holes": 4, "max_h_size": 32, "max_w_size": 32, "fill_value": 0, "p": 0.3}
+        transforms.append(A.CoarseDropout(holes=4, max_h_size=32, max_w_size=32, fill_value=0, p=0.3))
+
 
         # _applied_augmentations["ElasticTransform"] = {
         #     "alpha": 0.5,
