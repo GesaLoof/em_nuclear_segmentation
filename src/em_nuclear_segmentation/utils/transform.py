@@ -31,7 +31,7 @@ def get_transforms():
         transforms.append(A.RandomRotate90(p=0.5))
 
         _applied_augmentations["Affine"] = {
-            "translate_percent": 0.02,
+            "translate_percent": 0.0625,
             "scale": (0.95, 1.05),
             "rotate": (-10, 10),
             "shear": (-5, 5),
@@ -40,7 +40,7 @@ def get_transforms():
         }
         transforms.append(
             A.Affine(
-                translate_percent=0.02,
+                translate_percent=0.0625,
                 scale=(0.9, 1.1),
                 rotate=(-15, 15),
                 shear=(-5, 5),
@@ -57,8 +57,8 @@ def get_transforms():
         }
         transforms.append(A.RandomBrightnessContrast(brightness_limit=0.2, contrast_limit=0.2, p=0.4))
 
-        _applied_augmentations["GaussNoise"] = {"std_range": (10.0, 30.0),"mean_range": (-5,5), "p": 0.5}
-        transforms.append(A.GaussNoise(std_range=(10.0, 30.0), mean_range=(-5,5), p=0.5))
+        _applied_augmentations["GaussNoise"] = {"std_range": (0.1, 0.44),"mean_range": (-0.1,0.1), "p": 0.5}
+        transforms.append(A.GaussNoise(std_range=(0.1, 0.44), mean_range=(-0.1,0.1), p=0.5))
 
         _applied_augmentations["MotionBlur"] = {"blur_limit": 3, "p": 0.3}
         transforms.append(A.MotionBlur(blur_limit=3, p=0.3))
@@ -74,8 +74,8 @@ def get_transforms():
         }
         transforms.append(A.ElasticTransform(alpha=0.5, sigma=10, border_mode=1, p=0.2))
 
-        _applied_augmentations["GridDistortion"] = {"num_steps": 5, "distort_limit": 0.3, "p": 0.3}
-        transforms.append(A.GridDistortion(num_steps=5, distort_limit=0.3, p=0.3))
+        _applied_augmentations["GridDistortion"] = {"num_steps": 5, "distort_limit": 0.3, "p": 0.4}
+        transforms.append(A.GridDistortion(num_steps=5, distort_limit=0.3, p=0.4))
     
     # Final normalization and tensor conversion
     transforms.extend([
