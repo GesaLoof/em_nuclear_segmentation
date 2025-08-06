@@ -51,11 +51,11 @@ def get_transforms():
 
         # Appearance
         _applied_augmentations["RandomBrightnessContrast"] = {
-            "brightness_limit": 0.1,
-            "contrast_limit": 0.1,
+            "brightness_limit": 0.2,
+            "contrast_limit": 0.2,
             "p": 0.4
         }
-        transforms.append(A.RandomBrightnessContrast(brightness_limit=0.1, contrast_limit=0.1, p=0.4))
+        transforms.append(A.RandomBrightnessContrast(brightness_limit=0.2, contrast_limit=0.2, p=0.4))
 
         _applied_augmentations["GaussNoise"] = {"std_range": (10.0, 30.0),"mean_range": (-5,5), "p": 0.5}
         transforms.append(A.GaussNoise(std_range=(10.0, 30.0), mean_range=(-5,5), p=0.5))
@@ -63,16 +63,16 @@ def get_transforms():
         _applied_augmentations["MotionBlur"] = {"blur_limit": 3, "p": 0.3}
         transforms.append(A.MotionBlur(blur_limit=3, p=0.3))
         
-        _applied_augmentations["CoarseDropout"] = {"holes": 4, "max_h_size": 32, "max_w_size": 32, "fill_value": 0, "p": 0.3}
-        transforms.append(A.CoarseDropout(holes=4, max_h_size=32, max_w_size=32, fill_value=0, p=0.3))
+        _applied_augmentations["CoarseDropout"] = {"holes": 8, "max_h_size": 48, "max_w_size": 48, "fill_value": 0, "p": 0.3}
+        transforms.append(A.CoarseDropout(holes=8, max_h_size=48, max_w_size=48, fill_value=0, p=0.3))
 
-        # _applied_augmentations["ElasticTransform"] = {
-        #     "alpha": 0.5,
-        #     "sigma": 10,
-        #     "border_mode": "reflect",
-        #     "p": 0.2
-        # }
-        # transforms.append(A.ElasticTransform(alpha=0.5, sigma=10, border_mode=1, p=0.2))
+        _applied_augmentations["ElasticTransform"] = {
+            "alpha": 0.5,
+            "sigma": 10,
+            "border_mode": 1,
+            "p": 0.2
+        }
+        transforms.append(A.ElasticTransform(alpha=0.5, sigma=10, border_mode=1, p=0.2))
 
         _applied_augmentations["GridDistortion"] = {"num_steps": 5, "distort_limit": 0.3, "p": 0.3}
         transforms.append(A.GridDistortion(num_steps=5, distort_limit=0.3, p=0.3))
