@@ -42,7 +42,7 @@ def main():
 
     # Initialize model
     model = UNet(in_channels=config.in_channels, out_channels=config.out_channels, dropout_prob = config.dropout_prob).to(device)
-    optimizer = torch.optim.Adam(model.parameters(), lr=config.learning_rate)
+    optimizer = torch.optim.Adam(model.parameters(), lr=config.learning_rate, weight_decay=config.weight_deacy)
     loss_fn = nn.BCEWithLogitsLoss()
 
     os.makedirs(config.train_output_dir, exist_ok=True)
