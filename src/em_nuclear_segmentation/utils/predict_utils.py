@@ -8,7 +8,7 @@ from torchvision.transforms import functional as TF
 from skimage.exposure import match_histograms
 import matplotlib.pyplot as plt
 from em_nuclear_segmentation import config
-from models.unet import UNet
+from em_nuclear_segmentation.models.unet import UNet
 
 device = torch.device("cuda" if torch.cuda.is_available() else "mps" if torch.backends.mps.is_available() else "cpu")
 

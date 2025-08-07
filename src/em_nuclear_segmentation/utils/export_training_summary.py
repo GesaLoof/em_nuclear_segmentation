@@ -9,7 +9,7 @@ from em_nuclear_segmentation.utils.transform import (
     get_training_augmentation_description
 )
 
-def export_training_summary(pdf_path="training_summary.pdf"):
+def export_training_summary(pdf_path=os.path.join(config.train_output_dir,"training_summary.pdf")):
     """
     Generates a multi-page PDF summary:
     - Page 1: Configuration and paths
@@ -57,8 +57,8 @@ def export_training_summary(pdf_path="training_summary.pdf"):
 
         # Output
         lines.append("### Output")
-        lines.append(f"Model path: {os.path.join(config.split_output_dir, config.model_output_name)}")
-        lines.append(f"Log file:   {os.path.join(config.split_output_dir, 'training_log.csv')}")
+        lines.append(f"Model path: {os.path.join(config.train_output_dir, config.model_output_name)}")
+        lines.append(f"Log file:   {os.path.join(config.train_output_dir, 'training_log.csv')}")
         lines.append("")
 
         # Save config summary page
@@ -69,7 +69,7 @@ def export_training_summary(pdf_path="training_summary.pdf"):
         plt.close(fig1)
 
         # === PAGE 2: TRAINING LOSS CURVE ===
-        log_path = os.path.join(config.split_output_dir, "training_log.csv")
+        log_path = os.path.join(config.train_output_dir, "training_log.csv")
         if os.path.exists(log_path):
             df = pd.read_csv(log_path)
             fig2, ax2 = plt.subplots(figsize=(8.5, 6))
