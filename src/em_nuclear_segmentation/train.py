@@ -57,7 +57,7 @@ def main():
     if not os.path.exists(config.resume_checkpoint_path):
         print("No checkpoint found. Starting fresh training.")
 
-    if getattr(config, "resume_training", False) and os.path.exists(config.resume_checkpoint_path):
+    if config.resume_training and os.path.exists(config.resume_checkpoint_path):
         print(f"Resuming from checkpoint: {config.resume_checkpoint_path}")
         model.load_state_dict(torch.load(config.resume_checkpoint_path, map_location=device))
 
@@ -69,19 +69,21 @@ def main():
                 last_entry = history[-1]
                 start_epoch = int(last_entry["epoch"])
                 best_val_loss = float(last_entry["val_loss"])
+                patience_counter = int(last_entry["patience_counter"])
                 print(f"Resuming at epoch {start_epoch+1} with best_val_loss = {best_val_loss:.4f}")
+            patience_counter = 0
         else:
             print("No training log found — starting from checkpoint but logging fresh.")
             with open(log_path, mode="w", newline="") as f:
                 writer = csv.writer(f)
-                writer.writerow(["epoch", "train_loss", "val_loss"])
+                writer.writerow(["epoch", "train_loss", "val_loss", "patience_counter"])
+            patience_counter = 0
     else:
         # Start fresh log
         with open(log_path, mode="w", newline="") as f:
             writer = csv.writer(f)
-            writer.writerow(["epoch", "train_loss", "val_loss"])
-
-    patience_counter = 0
+            writer.writerow(["epoch", "train_loss", "val_loss", "patience_counter"])
+        patience_counter = 0
 
     for epoch in range(start_epoch, config.num_epochs):
         model.train()
@@ -108,9 +110,9 @@ def main():
         # Log results
         with open(log_path, mode="a", newline="") as f:
             writer = csv.writer(f)
-            writer.writerow([epoch + 1, avg_train_loss, val_loss])
+            writer.writerow([epoch + 1, avg_train_loss, val_loss, patience_counter])
 
-        print(f"Epoch {epoch+1}: Train Loss = {avg_train_loss:.4f}, Val Loss = {val_loss:.4f}")
+        print(f"Epoch {epoch+1}: Train Loss = {avg_train_loss:.4f}, Val Loss = {val_loss:.4f}, patience_counter = {patience_counter}")
 
         # Save best checkpoint
         if val_loss < best_val_loss:
