@@ -17,15 +17,25 @@ def dice_coef(y_true, y_pred):
     intersection = np.logical_and(y_true, y_pred).sum()
     return (2. * intersection) / (y_true.sum() + y_pred.sum() + 1e-8)
 
+def get_device():
+    if torch.cuda.is_available():
+        return torch.device("cuda")
+    # MPS works on Apple Silicon/macOS with PyTorch 1.12+
+    if hasattr(torch.backends, "mps") and torch.backends.mps.is_available():
+        return torch.device("mps")
+    return torch.device("cpu")
+
 # Main evaluation loop
 def evaluate_model():
     # Load test dataset (no transform required; handled inside predict function)
     test_dataset = NucleiDataset(config.test_image_dir, config.test_mask_dir, transform=None)
-
-    # Load model once and pass into predict
-    model = UNet(in_channels=config.in_channels, out_channels=config.out_channels)
-    model.load_state_dict(torch.load(config.evaluation_model_path, map_location="cpu"))
+    device = get_device()
+    model = UNet(in_channels=config.in_channels, out_channels=config.out_channels).to(device)
+    # Load weights onto the same device as the model
+    state = torch.load(config.evaluation_model_path, map_location=device)
+    model.load_state_dict(state)
     model.eval()
+    # Ensure output directory exists
 
     os.makedirs(config.prediction_output_dir, exist_ok=True)
     metrics = []
