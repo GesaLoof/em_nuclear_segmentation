@@ -42,7 +42,7 @@ def main():
 
     # Initialize model
     model = UNet(in_channels=config.in_channels, out_channels=config.out_channels, dropout_prob = config.dropout_prob).to(device)
-    optimizer = torch.optim.Adam(model.parameters(), lr=config.learning_rate, weight_decay=config.weight_decay)
+    optimizer = torch.optim.AdamW(model.parameters(), lr=config.learning_rate, weight_decay=config.weight_decay)
     loss_fn = nn.BCEWithLogitsLoss()
 
     os.makedirs(config.train_output_dir, exist_ok=True)
@@ -116,7 +116,7 @@ def main():
 
         # Save best checkpoint
         if val_loss < best_val_loss:
-            best_val_loss = val_loss
+            best_val_loss = val_loss 
             patience_counter = 0
             torch.save(model.state_dict(), best_model_path)
             print(f"Saved best model to {best_model_path} (val_loss = {val_loss:.4f})")

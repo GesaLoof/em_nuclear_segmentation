@@ -5,11 +5,13 @@ class UNet(nn.Module):
     def __init__(self, in_channels=1, out_channels=1, dropout_prob=0.0):
         super(UNet, self).__init__()
 
-        def conv_block(in_c, out_c, dropout=0.0):
+        def conv_block(in_c, out_c, dropout=0.0, norm_layer=nn.BatchNorm2d):
             layers = [
-                nn.Conv2d(in_c, out_c, kernel_size=3, padding=1),
+                nn.Conv2d(in_c, out_c, kernel_size=3, padding=1, bias=False),
+                norm_layer(out_c),
                 nn.ReLU(inplace=True),
-                nn.Conv2d(out_c, out_c, kernel_size=3, padding=1),
+                nn.Conv2d(out_c, out_c, kernel_size=3, padding=1, bias=False),
+                norm_layer(out_c),
                 nn.ReLU(inplace=True)
             ]
             if dropout > 0.0:

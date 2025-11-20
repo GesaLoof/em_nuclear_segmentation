@@ -57,7 +57,7 @@ def fine_tune():
         print("Encoder layers frozen.")
 
     # Optimizer and loss
-    optimizer = torch.optim.Adam(filter(lambda p: p.requires_grad, model.parameters()), lr=config.learning_rate)
+    optimizer = torch.optim.AdamW(filter(lambda p: p.requires_grad, model.parameters()), lr=config.learning_rate)
     loss_fn = nn.BCEWithLogitsLoss()
 
     # Logging setup
