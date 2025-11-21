@@ -8,6 +8,7 @@ import csv
 from tqdm import tqdm
 from em_nuclear_segmentation import config
 from em_nuclear_segmentation.utils.transform import get_transforms, get_val_transforms
+from em_nuclear_segmentation.utils.accuracy_metrics import binarize_logits, dice_coefficient, iou_score, pixel_accuracy
 
 # Device selection
 def get_device():
@@ -21,17 +22,37 @@ def get_device():
 device = get_device()
 
 # Validation evaluation
-def evaluate(model, dataloader, loss_fn):
+def evaluate(model, dataloader, loss_fn, thresh=0.5):
     model.eval()
-    total_loss = 0
+    total_loss = 0.0
+    total_acc = 0.0
+    total_dice = 0.0
+    total_iou = 0.0
+    num_batches = 0
+
     with torch.no_grad():
         for images, masks in dataloader:
             images = images.to(device)
-            masks = masks.to(device).float().unsqueeze(1)
-            preds = model(images)
-            loss = loss_fn(preds, masks)
+            masks = masks.to(device).float().unsqueeze(1)  # [N,1,H,W]
+
+            logits = model(images)
+            loss = loss_fn(logits, masks)
             total_loss += loss.item()
-    return total_loss / len(dataloader)
+
+            preds_bin = binarize_logits(logits, thresh)
+            total_acc  += pixel_accuracy(preds_bin, masks).item()
+            total_dice += dice_coefficient(preds_bin, masks).item()
+            total_iou  += iou_score(preds_bin, masks).item()
+
+            num_batches += 1
+
+    return {
+        "val_loss": total_loss / num_batches,
+        "val_acc":  total_acc  / num_batches,
+        "val_dice": total_dice / num_batches,
+        "val_iou":  total_iou  / num_batches,
+    }
+
 
 def main():
     # Load datasets
@@ -105,14 +126,23 @@ def main():
             loop.set_postfix(train_loss=loss.item())
 
         avg_train_loss = running_loss / len(train_loader)
-        val_loss = evaluate(model, val_loader, loss_fn)
+        metrics = evaluate(model, val_loader, loss_fn, thresh=0.5)
+        val_loss, val_acc, val_dice, val_iou = (
+            metrics["val_loss"], metrics["val_acc"], metrics["val_dice"], metrics["val_iou"]
+        )
 
-        # Log results
+        # Log
         with open(log_path, mode="a", newline="") as f:
             writer = csv.writer(f)
-            writer.writerow([epoch + 1, avg_train_loss, val_loss, patience_counter])
+            writer.writerow([epoch + 1, avg_train_loss, val_loss, patience_counter, val_acc, val_dice, val_iou])
 
-        print(f"Epoch {epoch+1}: Train Loss = {avg_train_loss:.4f}, Val Loss = {val_loss:.4f}, patience_counter = {patience_counter}")
+        print(
+            f"Epoch {epoch+1}: "
+            f"Train Loss={avg_train_loss:.4f} | "
+            f"Val Loss={val_loss:.4f} | "
+            f"Acc={val_acc:.4f} | Dice={val_dice:.4f} | IoU={val_iou:.4f} | "
+            f"patience={patience_counter}"
+        )
 
         # Save best checkpoint
         if val_loss < best_val_loss:
