@@ -103,7 +103,7 @@ def main():
         # Start fresh log
         with open(log_path, mode="w", newline="") as f:
             writer = csv.writer(f)
-            writer.writerow(["epoch", "train_loss", "val_loss", "patience_counter"])
+            writer.writerow(["epoch", "train_loss", "val_loss", "patience_counter", "val_acc", "val_dice", "val_iou"])
         patience_counter = 0
 
     for epoch in range(start_epoch, config.num_epochs):

@@ -64,7 +64,7 @@ def predict(image_path, model=None):
     with torch.no_grad():
         output = model(tensor)
         output = torch.sigmoid(output).squeeze().cpu().numpy()
-        pred_mask = (output > 0.5).astype(np.uint8) * 255
+        pred_mask = (output > config.prediction_threshold).astype(np.uint8) * 255
 
     # Resize to original
     pred_mask_resized = Image.fromarray(pred_mask).resize((orig_w, orig_h), resample=Image.NEAREST)

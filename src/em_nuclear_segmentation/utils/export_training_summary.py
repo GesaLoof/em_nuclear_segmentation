@@ -52,6 +52,8 @@ def export_training_summary(pdf_path=os.path.join(config.train_output_dir,"train
         lines.append("### Training Parameters")
         lines.append(f"Batch size:         {config.batch_size}")
         lines.append(f"Learning rate:      {config.learning_rate}")
+        lines.append(f"Weight decay:      {config.weight_decay}")
+        lines.append(f"Dropout probability:      {config.dropout_prob}")
         lines.append(f"Num epochs:         {config.num_epochs}")
         lines.append(f"Early stopping:     {config.use_early_stopping}")
         if config.use_early_stopping:
