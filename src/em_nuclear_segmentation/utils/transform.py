@@ -61,8 +61,9 @@ def get_transforms():
             _push_record("MotionBlur", {"blur_limit": 3, "p": 0.1})
             transforms.append(A.MotionBlur(blur_limit=3, p=0.1))
 
-            _push_record("CoarseDropout", {"holes": 2, "max_h_size": 16, "max_w_size": 16, "fill_value": 0, "p": 0.1})
-            transforms.append(A.CoarseDropout(holes=2, max_h_size=16, max_w_size=16, fill_value=0, p=0.1))
+            _push_record("CoarseDropout", {"max_holes": 3, "max_height": 16, "max_width": 16, "fill_value": 0, "p": 0.1})
+            transforms.append(A.CoarseDropout(max_holes=3, max_height=16, max_width=16, fill_value=0, p=0.1))
+
 
         elif strength == "strong":
             # --- Geometry (strong but fast) ---
@@ -130,8 +131,9 @@ def get_transforms():
             ], p=0.5))
 
             # --- Occlusion ---
-            _push_record("CoarseDropout", {"holes": 6, "max_h_size": 48, "max_w_size": 48, "fill_value": 0, "p": 0.2})
-            transforms.append(A.CoarseDropout(holes=6, max_h_size=48, max_w_size=48, fill_value=0, p=0.2))
+            _push_record("CoarseDropout", {"max_holes": 8, "max_height": 48, "max_width": 48, "fill_value": 0, "p": 0.3})
+            transforms.append(A.CoarseDropout(max_holes=8, max_height=48, max_width=48, fill_value=0, p=0.3))
+
 
         else:
             # === "medium" (your original spirit, with corrected APIs and a faster warp combo) ===
@@ -182,8 +184,9 @@ def get_transforms():
             _push_record("MotionBlur", {"blur_limit": 5, "p": 0.2})
             transforms.append(A.MotionBlur(blur_limit=5, p=0.2))
 
-            _push_record("CoarseDropout", {"holes": 4, "max_h_size": 32, "max_w_size": 32, "fill_value": 0, "p": 0.2})
-            transforms.append(A.CoarseDropout(holes=4, max_h_size=32, max_w_size=32, fill_value=0, p=0.2))
+            _push_record("CoarseDropout", {"max_holes": 5, "max_height": 32, "max_width": 32, "fill_value": 0, "p": 0.2})
+            transforms.append(A.CoarseDropout(max_holes=5, max_height=32, max_width=32, fill_value=0, p=0.2))
+
 
     # Final normalization and tensor conversion
     transforms.extend([
