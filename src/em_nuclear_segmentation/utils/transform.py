@@ -61,8 +61,8 @@ def get_transforms():
             _push_record("MotionBlur", {"blur_limit": 3, "p": 0.1})
             transforms.append(A.MotionBlur(blur_limit=3, p=0.1))
 
-            _push_record("CoarseDropout", {"max_holes": 3, "max_height": 16, "max_width": 16, "fill_value": 0, "p": 0.1})
-            transforms.append(A.CoarseDropout(max_holes=3, max_height=16, max_width=16, fill_value=0, p=0.1))
+            _push_record("CoarseDropout", {"num_holes_range": (6, 10), "hole_height_range": (32, 48), "hole_width_range": (32, 48), "fill": "random_uniform", "p": 0.3})
+            transforms.append(A.CoarseDropout(num_holes_range=(6, 10), hole_height_range=(32, 48), hole_width_range=(32, 48), fill="random_uniform", p=0.3))
 
 
         elif strength == "strong":
@@ -131,9 +131,8 @@ def get_transforms():
             ], p=0.5))
 
             # --- Occlusion ---
-            _push_record("CoarseDropout", {"max_holes": 8, "max_height": 48, "max_width": 48, "fill_value": 0, "p": 0.3})
-            transforms.append(A.CoarseDropout(max_holes=8, max_height=48, max_width=48, fill_value=0, p=0.3))
-
+            _push_record("CoarseDropout", {"num_holes_range": (1, 3), "hole_height_range": (8, 16), "hole_width_range": (8, 16), "fill": "random_uniform", "p": 0.1})
+            transforms.append(A.CoarseDropout(num_holes_range=(1, 3), hole_height_range=(8, 16), hole_width_range=(8, 16), fill="random_uniform", p=0.1))
 
         else:
             # === "medium" (your original spirit, with corrected APIs and a faster warp combo) ===
@@ -184,9 +183,8 @@ def get_transforms():
             _push_record("MotionBlur", {"blur_limit": 5, "p": 0.2})
             transforms.append(A.MotionBlur(blur_limit=5, p=0.2))
 
-            _push_record("CoarseDropout", {"max_holes": 5, "max_height": 32, "max_width": 32, "fill_value": 0, "p": 0.2})
-            transforms.append(A.CoarseDropout(max_holes=5, max_height=32, max_width=32, fill_value=0, p=0.2))
-
+            _push_record("CoarseDropout", {"num_holes_range": (3, 6), "hole_height_range": (16, 32), "hole_width_range": (16, 32), "fill": "random_uniform", "p": 0.2})
+            transforms.append(A.CoarseDropout(num_holes_range=(3, 6), hole_height_range=(16, 32), hole_width_range=(16, 32), fill="random_uniform", p=0.2))
 
     # Final normalization and tensor conversion
     transforms.extend([
