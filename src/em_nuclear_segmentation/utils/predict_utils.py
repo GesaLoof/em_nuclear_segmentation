@@ -9,6 +9,8 @@ from skimage.exposure import match_histograms
 import matplotlib.pyplot as plt
 from em_nuclear_segmentation import config
 from em_nuclear_segmentation.models.unet import UNet
+import albumentations as A
+from albumentations.pytorch import ToTensorV2
 
 device = torch.device("cuda" if torch.cuda.is_available() else "mps" if torch.backends.mps.is_available() else "cpu")
 
@@ -54,11 +56,33 @@ def predict(image_path, model=None):
     image = Image.fromarray(image_np.astype(np.uint8))
     orig_w, orig_h = image.size
 
-    # Preprocess
-    image_resized = TF.resize(image, [config.resize_height, config.resize_width])
-    tensor = TF.to_tensor(image_resized).float()
-    tensor = TF.normalize(tensor, mean=[0.5], std=[0.5])
-    tensor = tensor.unsqueeze(0).to(device)
+    # # Preprocess
+    # image_resized = TF.resize(image, [config.resize_height, config.resize_width])
+    # tensor = TF.to_tensor(image_resized).float()
+    # tensor = TF.normalize(tensor, mean=[0.5], std=[0.5])
+    # tensor = tensor.unsqueeze(0).to(device)
+
+    def _inference_transforms():
+        return A.Compose([
+            A.Resize(config.resize_height, config.resize_width),
+            A.Normalize(mean=(0.5,), std=(0.5,)),  # same as training
+            ToTensorV2()
+        ])
+
+    if image_np.ndim == 3:
+        image_np = image_np[..., 0]  # ensure 1 channel like training
+
+    tfm = _inference_transforms()
+    sample = tfm(image=image_np)
+    tensor = sample["image"].unsqueeze(0).to(device)
+
+    # sanity check: print logits and probs range
+    with torch.no_grad():
+        output = model(tensor)
+        probs = torch.sigmoid(output)
+        print("logits:", output.min().item(), output.mean().item(), output.max().item())
+        print("probs :", probs.min().item(),  probs.mean().item(),  probs.max().item())
+        pred_mask = (probs.squeeze(0).squeeze(0).cpu().numpy() > config.prediction_threshold).astype(np.uint8)*255
 
     # Predict
     with torch.no_grad():
