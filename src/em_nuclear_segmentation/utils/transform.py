@@ -61,8 +61,8 @@ def get_transforms():
             _push_record("MotionBlur", {"blur_limit": 3, "p": 0.1})
             transforms.append(A.MotionBlur(blur_limit=3, p=0.1))
 
-            _push_record("CoarseDropout", {"num_holes_range": (6, 10), "hole_height_range": (32, 48), "hole_width_range": (32, 48), "fill": "random_uniform", "p": 0.3})
-            transforms.append(A.CoarseDropout(num_holes_range=(6, 10), hole_height_range=(32, 48), hole_width_range=(32, 48), fill="random_uniform", p=0.3))
+            _push_record("CoarseDropout", {"num_holes_range": (1, 3), "hole_height_range": (8, 16), "hole_width_range": (8, 16), "fill": "random_uniform", "p": 0.1})
+            transforms.append(A.CoarseDropout(num_holes_range=(1, 3), hole_height_range=(8, 16), hole_width_range=(8, 16), fill="random_uniform", p=0.1))
 
 
         elif strength == "strong":
@@ -131,8 +131,9 @@ def get_transforms():
             ], p=0.5))
 
             # --- Occlusion ---
-            _push_record("CoarseDropout", {"num_holes_range": (1, 3), "hole_height_range": (8, 16), "hole_width_range": (8, 16), "fill": "random_uniform", "p": 0.1})
-            transforms.append(A.CoarseDropout(num_holes_range=(1, 3), hole_height_range=(8, 16), hole_width_range=(8, 16), fill="random_uniform", p=0.1))
+            _push_record("CoarseDropout", {"num_holes_range": (6, 10), "hole_height_range": (32, 48), "hole_width_range": (32, 48), "fill": "random_uniform", "p": 0.3})
+            transforms.append(A.CoarseDropout(num_holes_range=(6, 10), hole_height_range=(32, 48), hole_width_range=(32, 48), fill="random_uniform", p=0.3))
+
 
         else:
             # === "medium" (your original spirit, with corrected APIs and a faster warp combo) ===
