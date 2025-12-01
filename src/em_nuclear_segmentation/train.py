@@ -7,7 +7,7 @@ import os
 import csv
 from tqdm import tqdm
 from em_nuclear_segmentation import config
-from em_nuclear_segmentation.utils.transform import get_transforms, get_transforms_strong, get_val_transforms
+from em_nuclear_segmentation.utils.transform import get_transforms, get_val_transforms
 from em_nuclear_segmentation.utils.accuracy_metrics import binarize_logits, dice_coefficient, iou_score, pixel_accuracy
 
 # Device selection
