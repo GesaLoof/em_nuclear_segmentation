@@ -16,7 +16,9 @@ You can install `em_nuclear_segmentation` via [pip]:
 
     pip install em_nuclear_segmentation
 
+or you can install `em_nuclear_segmentation` with pinned version:
 
+    pip install em_nuclear_segmentation[pinned]
 
 To install latest development version :
 
