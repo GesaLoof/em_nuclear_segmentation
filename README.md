@@ -15,10 +15,7 @@ A repo to train a unet for unuclear segmentation
 You can install `em_nuclear_segmentation` via [pip] - cd into the folder and run:
 
     pip install . 
-or 
-    pip install -e .
-    
-for editable mode
+(add -e for editable mode)
 
 or
 
