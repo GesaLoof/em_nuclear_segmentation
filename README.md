@@ -12,11 +12,16 @@ A repo to train a unet for unuclear segmentation
 
 ## Installation
 
-You can install `em_nuclear_segmentation` via [pip]:
+You can install `em_nuclear_segmentation` via [pip] - cd into the folder and run:
 
-    pip install em_nuclear_segmentation
+    pip install . 
+(add -e for editable mode)
 
+or
 
+    pip install '.[pinned]'
+    
+for pinned versions for dependencies
 
 To install latest development version :
 
