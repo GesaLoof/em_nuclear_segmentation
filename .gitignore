@@ -92,3 +92,4 @@ src/em_nuclear_segmentation/config.py
 
 #models
 src/em_nuclear_segmentation/unet_nuclei.pth
+training_output_*/

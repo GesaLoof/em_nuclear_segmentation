@@ -8,26 +8,15 @@ def split_dataset():
     image_dir = Path(config.raw_image_dir)
     mask_dir = Path(config.raw_mask_dir)
     output_dir = Path(config.split_output_dir)
-    #print(image_dir.exists())
-    #resolved = Path(config.raw_image_dir).expanduser().resolve()
-
-    #print("Original path:", image_dir)
-    #print("Resolved path:", resolved)
-    #print("Exists?", resolved.exists())
-    #print("Files:", list(resolved.glob("*.tif")))
     
     assert abs(config.train_split + config.val_split + config.test_split - 1.0) < 1e-6, \
         "Split ratios must sum to 1"
-    print(image_dir)
-    print(image_dir.glob("*"))
     images = sorted([f for f in image_dir.glob("*") if f.suffix.lower() in [".png", ".jpg", ".tif", ".tiff"]])
     masks = sorted([f for f in mask_dir.glob("*") if f.suffix.lower() in [".png", ".jpg", ".tif", ".tiff"]])
     assert len(images) == len(masks), f"Mismatch: {len(images)} images and {len(masks)} masks"
-    print(images)
     paired = list(zip(images, masks))
     random.seed(config.random_seed)
     random.shuffle(paired)
-    print(paired)
     n_total = len(paired)
     n_train = int(config.train_split * n_total)
     n_val = int(config.val_split * n_total)
