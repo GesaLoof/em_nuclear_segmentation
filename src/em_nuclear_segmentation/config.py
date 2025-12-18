@@ -76,8 +76,8 @@ use_early_stopping = True
 early_stopping_patience = 20  # Stop if val_loss doesn't improve after X epochs
 
 # final model output name
-train_output_dir = "training_output_011225"
-model_output_name = "nuclei_unet_271125_batch_norm_aug_and_dropouts.pth"
+train_output_dir = "training_output_date"
+model_output_name = "model.pth"
 
 #resume training from a checkpoint
 resume_training = False
